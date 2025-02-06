@@ -1,0 +1,41 @@
+﻿@page "/"
+
+@inject AzureService AzureService
+@inject NavigationManager Navigation
+
+<h2>Azure Subscriptions</h2>
+
+@if (subscriptions == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <ul>
+        @foreach (var sub in subscriptions)
+        {
+            <li>
+                @sub.Name (@sub.Id)
+                <button @onclick="() => ViewResourceGroups(sub.Id, sub.Name)">View Resource Groups</button>
+            </li>
+        }
+    </ul>
+}
+
+<Breadcrumb Items="breadcrumbs" />
+
+@code {
+    private List<SubscriptionModel>? subscriptions;
+    private List<(string Label, EventCallback OnClick)> breadcrumbs = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        subscriptions = await AzureService.GetSubscriptionsAsync();
+        breadcrumbs = new List<(string Label, EventCallback OnClick)> { ("Subscriptions", EventCallback.Empty) };
+    }
+
+    private void ViewResourceGroups(string id, string name)
+    {
+        Navigation.NavigateTo($"/resourcegroups/{id}/{name}");
+    }
+}

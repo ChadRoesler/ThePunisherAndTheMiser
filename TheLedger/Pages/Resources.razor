@@ -1,0 +1,50 @@
+﻿@page "/resources/{resourceGroupId}/{resourceGroupName}"
+
+@inject AzureService AzureService
+@inject NavigationManager Navigation
+
+<h2>Resources in @ResourceGroupName</h2>
+
+@if (resources == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <ul>
+        @foreach (var res in resources)
+        {
+            <li>
+                @res.Name (@res.Type) - @res.Location
+                <button @onclick="() => ShowTags(res.Tags)">View Tags</button>
+            </li>
+        }
+    </ul>
+}
+
+<Breadcrumb Items="breadcrumbs" />
+<TagsBlade Tags="selectedTags" OnClose="() => selectedTags = null" />
+
+@code {
+    [Parameter] public string ResourceGroupId { get; set; } = string.Empty;
+    [Parameter] public string ResourceGroupName { get; set; } = string.Empty;
+
+    private List<ResourceModel>? resources;
+    private Dictionary<string, string>? selectedTags;
+    private List<(string Label, EventCallback OnClick)> breadcrumbs = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        resources = await AzureService.GetResourcesAsync(ResourceGroupId);
+        breadcrumbs = new List<(string Label, EventCallback OnClick)>
+        {
+            ("Subscriptions", EventCallback.Factory.Create(this, () => Navigation.NavigateTo("/"))),
+            (ResourceGroupName, EventCallback.Empty)
+        };
+    }
+
+    private void ShowTags(Dictionary<string, string>? tags)
+    {
+        selectedTags = tags;
+    }
+}

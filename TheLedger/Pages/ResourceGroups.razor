@@ -1,0 +1,56 @@
+﻿@page "/resourcegroups/{subscriptionId}/{subscriptionName}"
+
+@inject AzureService AzureService
+@inject NavigationManager Navigation
+
+<h2>Resource Groups in @SubscriptionName</h2>
+
+@if (resourceGroups == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <ul>
+        @foreach (var rg in resourceGroups)
+        {
+            <li>
+                @rg.Name (@rg.Location)
+                <button @onclick="() => ShowTags(rg.Tags)">View Tags</button>
+                <button @onclick="() => ViewResources(rg.Id, rg.Name)">View Resources</button>
+            </li>
+        }
+    </ul>
+}
+
+<Breadcrumb Items="breadcrumbs" />
+<TagsBlade Tags="selectedTags" OnClose="() => selectedTags = null" />
+
+@code {
+    [Parameter] public string SubscriptionId { get; set; } = string.Empty;
+    [Parameter] public string SubscriptionName { get; set; } = string.Empty;
+
+    private List<ResourceGroupModel>? resourceGroups;
+    private Dictionary<string, string>? selectedTags;
+    private List<(string Label, EventCallback OnClick)> breadcrumbs = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        resourceGroups = await AzureService.GetResourceGroupsAsync(SubscriptionId);
+        breadcrumbs = new List<(string Label, EventCallback OnClick)>
+        {
+            ("Subscriptions", EventCallback.Factory.Create(this, () => Navigation.NavigateTo("/"))),
+            (SubscriptionName, EventCallback.Empty)
+        };
+    }
+
+    private void ShowTags(Dictionary<string, string>? tags)
+    {
+        selectedTags = tags;
+    }
+
+    private void ViewResources(string id, string name)
+    {
+        Navigation.NavigateTo($"/resources/{id}/{name}");
+    }
+}

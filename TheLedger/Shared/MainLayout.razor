@@ -1,0 +1,40 @@
+﻿@inherits LayoutComponentBase
+
+<div class="main-layout">
+    <header>
+        <h1>Azure Management</h1>
+    </header>
+
+    <main>
+        <Breadcrumb Items="breadcrumbs" />
+        <div class="content">
+            @Body
+        </div>
+    </main>
+</div>
+
+<style>
+    .main-layout {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+    }
+
+    header {
+        width: 100%;
+        background: #0078D4;
+        color: white;
+        padding: 10px;
+        text-align: center;
+    }
+
+    .content {
+        width: 80%;
+        margin-top: 20px;
+    }
+</style>
+
+@code {
+    private List<(string Label, EventCallback OnClick)> breadcrumbs = new();
+}

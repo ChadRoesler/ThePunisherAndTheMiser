@@ -1,0 +1,29 @@
+﻿@code {
+    [Parameter] public List<(string Label, EventCallback OnClick)> Items { get; set; } = new();
+}
+
+<nav>
+    <ol class="breadcrumb">
+        @foreach (var item in Items)
+        {
+            <li class="breadcrumb-item">
+                <a href="#" @onclick="item.OnClick">@item.Label</a>
+            </li>
+        }
+    </ol>
+</nav>
+
+<style>
+    .breadcrumb {
+        display: flex;
+        gap: 5px;
+        list-style: none;
+        padding: 10px;
+    }
+
+    .breadcrumb-item a {
+        text-decoration: none;
+        color: blue;
+        cursor: pointer;
+    }
+</style>
