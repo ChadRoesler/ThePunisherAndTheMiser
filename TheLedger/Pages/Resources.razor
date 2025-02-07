@@ -1,6 +1,6 @@
 ﻿@page "/resources/{resourceGroupId}/{resourceGroupName}"
 
-@inject AzureService AzureService
+@inject ResourceService ResourceService
 @inject NavigationManager Navigation
 
 <h2>Resources in @ResourceGroupName</h2>
@@ -15,8 +15,8 @@ else
         @foreach (var res in resources)
         {
             <li>
-                @res.Name (@res.Type) - @res.Location
-                <button @onclick="() => ShowTags(res.Tags)">View Tags</button>
+                @res.Name (@res.ResourceType) - @res.Location
+                <button @onclick="() => ShowTags(res.Tags.CurrentTags)">View Tags</button>
             </li>
         }
     </ul>
@@ -35,7 +35,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        resources = await AzureService.GetResourcesAsync(ResourceGroupId);
+        resources = await ResourceService.LoadResources(ResourceGroupId);
         breadcrumbs = new List<(string Label, EventCallback OnClick)>
         {
             ("Subscriptions", EventCallback.Factory.Create(this, () => Navigation.NavigateTo("/"))),

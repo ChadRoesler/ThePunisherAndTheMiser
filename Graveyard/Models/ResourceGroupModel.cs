@@ -1,14 +1,11 @@
-﻿using Graveyard.Interfaces;
-
-namespace Graveyard.Models
+﻿namespace Graveyard.Models
 {
-    public class ResourceGroupModel : IGrave
+    public class ResourceGroupModel
     {
         public string Id { get; set; }
         public string Name { get; set; }
         public string SubscriptionId { get; set; }
-
-        public List<ResourceModel> Resources { get; set; }
+        public string Location { get; set; }
         public TagModel Tags { get; set; }
     }
 }

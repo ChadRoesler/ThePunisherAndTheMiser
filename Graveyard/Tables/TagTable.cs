@@ -11,11 +11,8 @@ namespace Graveyard.Tables
 
         public required string ObjectId { get; set; }
 
-        public required string TagKey { get; set; }
-
-        public required string TagValue { get; set; }
-
-        public int Id { get; set; }
+        public required string TagJson { get; set; }
+        public required int Id { get; set; }
 
         public ETag ETag { get; set; } = ETag.All;
 

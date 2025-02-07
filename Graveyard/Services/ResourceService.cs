@@ -1,19 +1,13 @@
-﻿using Azure.Data.Tables;
-using Azure.Identity;
+﻿using Azure.Identity;
 using Azure.Core;
 using Azure.ResourceManager;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Graveyard.Models;
+using Graveyard.ExtensionMethods;
 
 namespace Graveyard.Services
 {
-    internal class ResourceService
+    public class ResourceService
     {
-        private static string _tableUri = string.Empty;
         private static ArmClient _armClient;
 
         public ResourceService()
@@ -46,6 +40,7 @@ namespace Graveyard.Services
                 {
                     Id = rg.Data.Id ?? string.Empty,
                     Name = rg.Data.Name,
+                    Location = rg.Data.Location.ToString(),
                     SubscriptionId = subscriptionId
                 };
                 resourceGroup.Tags = new TagModel
@@ -55,13 +50,36 @@ namespace Graveyard.Services
                     CurrentTags = new Dictionary<string, string>(),
                     TagHistory = new List<HistoricTagModel>()
                 };
-                if (rg.Data.Tags != null)
-                {
-                    resourceGroup.Tags.CurrentTags = new Dictionary<string, string>(rg.Data.Tags);
-                }
+                resourceGroup.Tags.CurrentTags = rg.Data.VisibleTags();
                 resourceGroupObjs.Add(resourceGroup);
             }
             return resourceGroupObjs;
+        }
+
+        public async Task<ResourceModel> LoadResourceModel(string resourceId)
+        {
+            var resource = new ResourceModel();
+            var res = _armClient.GetGenericResource(new ResourceIdentifier(resourceId));
+            var resourceGroupId = string.Empty;
+            string[] parts = resourceId.ToString().Split('/');
+            int rgIndex = Array.IndexOf(parts, "resourceGroups");
+            if (rgIndex != -1 && rgIndex + 1 < parts.Length)
+            {
+                resourceGroupId = parts[rgIndex + 1]; // Resource group name is the next segment after "resourceGroups"
+            }
+            resource.ResourceGroupId = resourceGroupId;
+            resource.Id = resourceId;
+            resource.Name = res.Data.Name;
+            resource.Location = res.Data.Location.ToString();
+            resource.Tags = new TagModel
+            {
+                ObjectId = resource.Id,
+                ObjectType = "Resource",
+                CurrentTags = new Dictionary<string, string>(),
+                TagHistory = new List<HistoricTagModel>()
+            };
+            resource.Tags.CurrentTags = res.Data.VisibleTags();
+            return resource;
         }
 
         public async Task<List<ResourceModel>> LoadResources(string resourceGroupId)
@@ -84,10 +102,7 @@ namespace Graveyard.Services
                     CurrentTags = new Dictionary<string, string>(),
                     TagHistory = new List<HistoricTagModel>()
                 };
-                if (res.Data.Tags != null)
-                {
-                    resource.Tags.CurrentTags = new Dictionary<string, string>(res.Data.Tags);
-                }
+                resource.Tags.CurrentTags = res.Data.VisibleTags();
                 resourceObjs.Add(resource);
             }
             return resourceObjs;

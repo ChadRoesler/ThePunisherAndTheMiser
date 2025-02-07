@@ -1,13 +1,13 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Logging;
-using TheLedger.Services;
+using Graveyard.Services;
 using TheLedger;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 
-builder.Services.AddScoped<AzureService>();
+builder.Services.AddScoped<ResourceService>();
 
 // Configure Logging
 builder.Logging.SetMinimumLevel(LogLevel.Debug); // Set the logging level (Debug, Info, Warning, Error)

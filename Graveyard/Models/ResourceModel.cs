@@ -1,9 +1,8 @@
-﻿using Graveyard.Interfaces;
-
+﻿using Graveyard.Services;
 
 namespace Graveyard.Models
 {
-    public class ResourceModel: IGrave
+    public class ResourceModel
     {
         public string Name { get; set; }
         public string ResourceType { get; set; }
@@ -12,8 +11,7 @@ namespace Graveyard.Models
 
         public string Location { get; set; }
 
-        internal TagModel Tags { get; set; }
-
-        public DateTimeOffset? Timestamp { get; set; }
+        public TagModel Tags { get; set; }
+        
     }
 }

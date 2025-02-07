@@ -1,6 +1,6 @@
 ﻿@page "/"
 
-@inject AzureService AzureService
+@inject ResourceService ResourceService
 @inject NavigationManager Navigation
 
 <h2>Azure Subscriptions</h2>
@@ -30,7 +30,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        subscriptions = await AzureService.GetSubscriptionsAsync();
+        subscriptions = await ResourceService.LoadSubscriptions();
         breadcrumbs = new List<(string Label, EventCallback OnClick)> { ("Subscriptions", EventCallback.Empty) };
     }
 

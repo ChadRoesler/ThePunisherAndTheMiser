@@ -1,6 +1,6 @@
 ﻿@page "/resourcegroups/{subscriptionId}/{subscriptionName}"
 
-@inject AzureService AzureService
+@inject ResourceService ResourceService
 @inject NavigationManager Navigation
 
 <h2>Resource Groups in @SubscriptionName</h2>
@@ -16,7 +16,7 @@ else
         {
             <li>
                 @rg.Name (@rg.Location)
-                <button @onclick="() => ShowTags(rg.Tags)">View Tags</button>
+                <button @onclick="() => ShowTags(rg.Tags.CurrentTags)">View Tags</button>
                 <button @onclick="() => ViewResources(rg.Id, rg.Name)">View Resources</button>
             </li>
         }
@@ -36,7 +36,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        resourceGroups = await AzureService.GetResourceGroupsAsync(SubscriptionId);
+        resourceGroups = await ResourceService.LoadResourceGroups(SubscriptionId);
         breadcrumbs = new List<(string Label, EventCallback OnClick)>
         {
             ("Subscriptions", EventCallback.Factory.Create(this, () => Navigation.NavigateTo("/"))),

@@ -2,6 +2,7 @@
 using Azure.Identity;
 using Azure.ResourceManager;
 using Ebenezer.Constants;
+using Graveyard.ExtensionMethods;
 using Microsoft.Azure.Functions.Worker;
 using System.Configuration;
 using Microsoft.Extensions.Logging;
@@ -36,6 +37,11 @@ namespace Ebenezer.Workers.Tagging
                 var resources = resourceGroup.GetGenericResourcesAsync();
                 await foreach (var resource in resources)
                 {
+
+                    if(customKeyDict.Equals(resource.Data.Tags))
+                    {
+                        return;
+                    }
                     foreach (var tag in customKeyDict)
                     {
                         if (resource.Data.Tags.ContainsKey(tag.Key))
@@ -44,7 +50,7 @@ namespace Ebenezer.Workers.Tagging
                         }
                         try
                         {
-                            resource.AddTag(tag.Key, tag.Value);
+                            resource.Ae(tag.Key, tag.Value);
                             _logger.LogInformation($"Added Tag: {tag.Key} to {resource.Data.ResourceType}: {resource.Id}");
                         }
                         catch (RequestFailedException ex)
