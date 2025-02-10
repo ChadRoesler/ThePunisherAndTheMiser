@@ -1,12 +1,11 @@
-﻿using Azure;
-using Azure.Identity;
+﻿using Azure.Identity;
 using Azure.ResourceManager;
 using Ebenezer.Constants;
 using Graveyard.ExtensionMethods;
 using Microsoft.Azure.Functions.Worker;
-using System.Configuration;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System.Configuration;
 
 
 namespace Ebenezer.Workers.Tagging
@@ -14,6 +13,7 @@ namespace Ebenezer.Workers.Tagging
     public class CustomTagging
     {
         private readonly ILogger _logger;
+        private readonly ArmClient _armClient;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CustomTagging"/> class.
@@ -22,42 +22,29 @@ namespace Ebenezer.Workers.Tagging
         public CustomTagging(ILoggerFactory loggerFactory)
         {
             _logger = loggerFactory.CreateLogger<CustomTagging>();
+            _armClient = new ArmClient(new DefaultAzureCredential());
         }
 
         [Function("CustomTagging")]
         public async Task Run([TimerTrigger("0 0 1 * * *")] TimerInfo myTimer)
         {
             _logger.LogInformation($"C# CustomTagging function executed at: {DateTime.Now}");
-            var credential = new DefaultAzureCredential();
-            var armClient = new ArmClient(credential);
             var startupTagKey = Environment.GetEnvironmentVariable(ResourceStrings.CustomTagsJson) ?? throw new ConfigurationErrorsException(ResourceStrings.CustomTagsJson);
             var customKeyDict = JsonConvert.DeserializeObject<Dictionary<string, string>>(startupTagKey) ?? [];
-            foreach (var resourceGroup in armClient.GetDefaultSubscription().GetResourceGroups())
+            foreach (var resourceGroup in _armClient.GetDefaultSubscription().GetResourceGroups())
             {
                 var resources = resourceGroup.GetGenericResourcesAsync();
                 await foreach (var resource in resources)
                 {
-
-                    if(customKeyDict.Equals(resource.Data.Tags))
+                    var resourceTags = resource.Data.VisibleTags();
+                    if (resourceTags.IsEqualTo(customKeyDict))
                     {
                         return;
                     }
-                    foreach (var tag in customKeyDict)
+                    else
                     {
-                        if (resource.Data.Tags.ContainsKey(tag.Key))
-                        {
-                            return;
-                        }
-                        try
-                        {
-                            resource.Ae(tag.Key, tag.Value);
-                            _logger.LogInformation($"Added Tag: {tag.Key} to {resource.Data.ResourceType}: {resource.Id}");
-                        }
-                        catch (RequestFailedException ex)
-                        {
-                            _logger.LogError($"Error adding Tag: {tag.Key} to {resource.Data.ResourceType}: {resource.Id}");
-                            _logger.LogError($"Error: {ex.Message}");
-                        }
+                        resourceTags.Merge(customKeyDict);
+                        resource.SetTags(resourceTags);
                     }
                 }
             }

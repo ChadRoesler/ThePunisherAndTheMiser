@@ -3,8 +3,8 @@ using Azure.Identity;
 using Azure.ResourceManager;
 using Ebenezer.Constants;
 using Microsoft.Azure.Functions.Worker;
-using System.Configuration;
 using Microsoft.Extensions.Logging;
+using System.Configuration;
 
 
 namespace Ebenezer.Workers.Tagging
@@ -15,6 +15,7 @@ namespace Ebenezer.Workers.Tagging
     public class ShutdownTagging
     {
         private readonly ILogger _logger;
+        private readonly ArmClient _armClient;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ShutdownTagging"/> class.
@@ -23,6 +24,7 @@ namespace Ebenezer.Workers.Tagging
         public ShutdownTagging(ILoggerFactory loggerFactory)
         {
             _logger = loggerFactory.CreateLogger<ShutdownTagging>();
+            _armClient = new ArmClient(new DefaultAzureCredential());
         }
 
         // ... other parts of the class ...
@@ -31,8 +33,6 @@ namespace Ebenezer.Workers.Tagging
         public async Task Run([TimerTrigger("0 0 1 * * *")] TimerInfo myTimer)
         {
             _logger.LogInformation($"C# ShutdownTagging function executed at: {DateTime.Now}");
-            var credential = new DefaultAzureCredential();
-            var armClient = new ArmClient(credential);
             var shutdownTagKey = Environment.GetEnvironmentVariable(ResourceStrings.ShutdownTagKey) ?? throw new ConfigurationErrorsException(ResourceStrings.ShutdownTagKey);
             var shutdownTagKeyDefault = Environment.GetEnvironmentVariable(ResourceStrings.ShutdownTagKeyDefault) ?? throw new ConfigurationErrorsException(ResourceStrings.ShutdownTagKeyDefault);
             var shutdownTimeTagKey = Environment.GetEnvironmentVariable(ResourceStrings.ShutdownTimeTagKey) ?? throw new ConfigurationErrorsException(ResourceStrings.ShutdownTimeTagKey);
@@ -44,7 +44,7 @@ namespace Ebenezer.Workers.Tagging
                 { shutdownTimeTagKey, shutdownTimeTagKeyDefault }
             };
 
-            foreach (var resourceGroup in armClient.GetDefaultSubscription().GetResourceGroups())
+            foreach (var resourceGroup in _armClient.GetDefaultSubscription().GetResourceGroups())
             {
                 var resources = resourceGroup.GetGenericResourcesAsync();
                 await foreach (var resource in resources)

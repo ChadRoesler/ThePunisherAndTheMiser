@@ -11,5 +11,6 @@
         internal const string StartupTimeTagKey = "StartupTimeTagKey";
         internal const string StartupTimeTagKeyDefault = "StartupTimeTagKeyDefault";
         internal const string CustomTagsJson = "CustomTagsJson";
+        internal const string DryRunFlag = "DryRun";
     }
 }

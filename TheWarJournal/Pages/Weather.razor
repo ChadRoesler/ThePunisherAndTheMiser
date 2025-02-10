@@ -1,0 +1,66 @@
+﻿@page "/weather"
+@inject HttpClient Http
+
+
+@inject ResourceService ResourceService
+@inject NavigationManager Navigation
+
+<h2>Azure Subscriptions</h2>
+
+@if (subscriptions == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <ul>
+        @foreach (var sub in subscriptions)
+        {
+            <li>
+                @sub.Name (@sub.Id)
+                <button @onclick="() => ViewResourceGroups(sub.Id, sub.Name)">View Resource Groups</button>
+            </li>
+        }
+    </ul>
+}
+
+@code {
+    private List<SubscriptionModel>? subscriptions;
+    private List<(string Label, EventCallback OnClick)> breadcrumbs = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        subscriptions = await ResourceService.LoadSubscriptions();
+        breadcrumbs = new List<(string Label, EventCallback OnClick)> { ("Subscriptions", EventCallback.Empty) };
+    }
+
+    private void ViewResourceGroups(string id, string name)
+    {
+        Navigation.NavigateTo($"/resourcegroups/{id}/{name}");
+    }
+}
+
+
+@inject ResourceService ResourceService
+@inject NavigationManager Navigation
+
+<h2>Azure Subscriptions</h2>
+
+@if (subscriptions == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <ul>
+        @foreach (var sub in subscriptions)
+        {
+            <li>
+                @sub.Name (@sub.Id)
+                <button @onclick="() => ViewResourceGroups(sub.Id, sub.Name)">View Resource Groups</button>
+            </li>
+        }
+    </ul>
+}
+
+

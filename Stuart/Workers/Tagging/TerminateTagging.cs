@@ -6,7 +6,7 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using System.Configuration;
 
-namespace Frank.Workers.Tagging
+namespace Stuart.Workers.Tagging
 {
     /// <summary>
     /// Azure Function to add Terminate tags to resources.
@@ -14,6 +14,7 @@ namespace Frank.Workers.Tagging
     public class TerminateTagging
     {
         private readonly ILogger _logger;
+        private readonly ArmClient _armClient;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TerminateTagging"/> class.
@@ -22,6 +23,8 @@ namespace Frank.Workers.Tagging
         public TerminateTagging(ILoggerFactory loggerFactory)
         {
             _logger = loggerFactory.CreateLogger<TerminateTagging>();
+            _armClient = new ArmClient(new DefaultAzureCredential());
+
         }
 
         /// <summary>
@@ -32,12 +35,11 @@ namespace Frank.Workers.Tagging
         public void Run([TimerTrigger("0 0 1 * * *")] TimerInfo myTimer)
         {
             _logger.LogInformation($"C# TerminateTagging function executed at: {DateTime.Now}");
-            var credential = new DefaultAzureCredential();
-            var armClient = new ArmClient(credential);
+            _logger.LogInformation("Gathering EnvironmentVariables...");
             var terminateTagKey = Environment.GetEnvironmentVariable(ResourceStrings.TerminateTagKey) ?? throw new ConfigurationErrorsException(ResourceStrings.TerminateTagKey);
             var terminateTagKeyDefault = Environment.GetEnvironmentVariable(ResourceStrings.TerminateTagKeyDefault) ?? throw new ConfigurationErrorsException(ResourceStrings.TerminateTagKeyDefault);
 
-            foreach (var resourceGroup in armClient.GetDefaultSubscription().GetResourceGroups())
+            foreach (var resourceGroup in _armClient.GetDefaultSubscription().GetResourceGroups())
             {
                 foreach (var resource in resourceGroup.GetGenericResources())
                 {

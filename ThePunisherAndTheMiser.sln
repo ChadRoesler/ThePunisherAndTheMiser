@@ -18,6 +18,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bob", "Bob\Bob.csproj", "{F8B22332-57B2-43AF-9388-6751AD0A2D9B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Stuart", "Stuart\Stuart.csproj", "{9D4780E0-222C-4468-AD11-5DB962A4AC9B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TheWarJournal", "TheWarJournal\TheWarJournal.csproj", "{7195D630-449D-4CAE-A29C-5B158D97466E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,6 +48,14 @@ Global
 		{F8B22332-57B2-43AF-9388-6751AD0A2D9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F8B22332-57B2-43AF-9388-6751AD0A2D9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F8B22332-57B2-43AF-9388-6751AD0A2D9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D4780E0-222C-4468-AD11-5DB962A4AC9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D4780E0-222C-4468-AD11-5DB962A4AC9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D4780E0-222C-4468-AD11-5DB962A4AC9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D4780E0-222C-4468-AD11-5DB962A4AC9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7195D630-449D-4CAE-A29C-5B158D97466E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7195D630-449D-4CAE-A29C-5B158D97466E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7195D630-449D-4CAE-A29C-5B158D97466E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7195D630-449D-4CAE-A29C-5B158D97466E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

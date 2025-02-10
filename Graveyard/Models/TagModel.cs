@@ -2,11 +2,11 @@
 {
     public class TagModel
     {
-        public string ObjectId { get; set; }
-        public string ObjectType { get; set; }
+        public string ObjectId { get; set; } = string.Empty;
+        public string ObjectType { get; set; } = string.Empty;
 
-        public Dictionary<string, string> CurrentTags { get; set; } = new();
+        public Dictionary<string, string> CurrentTags { get; set; } = [];
 
-        public List<HistoricTagModel> TagHistory { get; set; } = new();
+        public List<HistoricTagModel> TagHistory { get; set; } = [];
     }
 }

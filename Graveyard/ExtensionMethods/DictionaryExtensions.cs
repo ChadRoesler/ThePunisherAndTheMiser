@@ -2,17 +2,10 @@
 {
     public static class DictionaryExtensions
     {
-        public static bool IsEqualTo<TKey, TValue>(this Dictionary<TKey, TValue> rootDictionary, Dictionary<TKey, TValue> comparedDictionary, StringComparison stringComparison = StringComparison.CurrentCultureIgnoreCase)
+        public static bool IsEqualTo<TKey, TValue>(this Dictionary<TKey, TValue> rootDictionary, Dictionary<TKey, TValue> comparedDictionary) where TKey : notnull
         {
-            if (rootDictionary is null)
-            {
-                throw new ArgumentNullException(nameof(rootDictionary));
-            }
-
-            if (comparedDictionary is null)
-            {
-                throw new ArgumentNullException(nameof(comparedDictionary));
-            }
+            ArgumentNullException.ThrowIfNull(rootDictionary);
+            ArgumentNullException.ThrowIfNull(comparedDictionary);
 
             if (rootDictionary.Count != comparedDictionary.Count)
             {
@@ -29,15 +22,15 @@
             return true;
         }
 
-        public static void Merge<TKey, TValue>(this Dictionary<TKey, TValue> rootDictionary, Dictionary<TKey, TValue> comparedDictionary, bool updateIfKeyExists = false)
+        public static void Merge<TKey, TValue>(this Dictionary<TKey, TValue> rootDictionary, Dictionary<TKey, TValue> comparedDictionary, bool updateIfKeyExists = false) where TKey : notnull
         {
             if (rootDictionary is null)
             {
-                throw new ArgumentNullException(nameof(rootDictionary));
+                ArgumentNullException.ThrowIfNull(rootDictionary);
             }
             if (comparedDictionary is null)
             {
-                throw new ArgumentNullException(nameof(comparedDictionary));
+                ArgumentNullException.ThrowIfNull(comparedDictionary);
             }
 
             foreach (var kvp in comparedDictionary)

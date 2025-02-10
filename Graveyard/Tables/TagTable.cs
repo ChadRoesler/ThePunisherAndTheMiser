@@ -7,7 +7,7 @@ namespace Graveyard.Tables
     {
         public required string RowKey { get; set; } = Guid.NewGuid().ToString();
 
-        public required string PartitionKey { get; set; } = "Tags";
+        public required string PartitionKey { get; set; }
 
         public required string ObjectId { get; set; }
 

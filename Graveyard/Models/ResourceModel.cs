@@ -1,17 +1,15 @@
-﻿using Graveyard.Services;
-
-namespace Graveyard.Models
+﻿namespace Graveyard.Models
 {
     public class ResourceModel
     {
-        public string Name { get; set; }
-        public string ResourceType { get; set; }
-        public string Id { get; set; }
-        public string ResourceGroupId { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string ResourceType { get; set; } = string.Empty;
+        public string Id { get; set; } = string.Empty;
+        public string ResourceGroupId { get; set; } = string.Empty;
 
-        public string Location { get; set; }
+        public string Location { get; set; } = string.Empty;
 
-        public TagModel Tags { get; set; }
-        
+        public TagModel Tags { get; set; } = new();
+
     }
 }

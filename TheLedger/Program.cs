@@ -1,7 +1,5 @@
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.Logging;
 using Graveyard.Services;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using TheLedger;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);

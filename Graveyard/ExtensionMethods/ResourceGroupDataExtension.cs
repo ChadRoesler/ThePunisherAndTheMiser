@@ -1,4 +1,5 @@
 ﻿using Azure.ResourceManager.Resources;
+using Graveyard.Constants;
 
 namespace Graveyard.ExtensionMethods
 {
@@ -9,7 +10,7 @@ namespace Graveyard.ExtensionMethods
             var tags = new Dictionary<string, string>();
             if (data.Tags != null && data.Tags.Count > 0)
             {
-                var nonHiddenTagKeys = data.Tags.Keys.Where(x => !x.StartsWith("hidden-", StringComparison.OrdinalIgnoreCase));
+                var nonHiddenTagKeys = data.Tags.Keys.Where(x => !x.StartsWith(ResourceStrings.HiddenTagKeyStartsWith, StringComparison.OrdinalIgnoreCase));
                 foreach (var key in nonHiddenTagKeys)
                 {
                     tags[key] = data.Tags[key] ?? string.Empty;

@@ -11,27 +11,28 @@ namespace Frank.Workers
     public class Terminate
     {
         private readonly ILogger _logger;
+        private readonly ArmClient _armClient;
 
         public Terminate(ILoggerFactory loggerFactory)
         {
             _logger = loggerFactory.CreateLogger<Terminate>();
+            _armClient = new ArmClient(new DefaultAzureCredential());
         }
 
         [Function("Terminate")]
         public void Run([TimerTrigger("0 0 0 * * *")] TimerInfo myTimer)
         {
             _logger.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
-            var credential = new DefaultAzureCredential();
-            var armClient = new ArmClient(credential);
             var terminateKey = Environment.GetEnvironmentVariable(ResourceStrings.TerminateTagKey) ?? throw new ConfigurationErrorsException(ResourceStrings.TerminateTagKey);
             var terminateDefaultValueString = Environment.GetEnvironmentVariable(ResourceStrings.TerminateTagKeyDefault) ?? throw new ConfigurationErrorsException(ResourceStrings.TerminateTagKeyDefault);
             var immortalityValue = Environment.GetEnvironmentVariable(ResourceStrings.ImmortalSettingValue) ?? throw new ConfigurationErrorsException(ResourceStrings.ImmortalSettingValue);
+            var dryRunFlag = Environment.GetEnvironmentVariable(ResourceStrings.DryRunFlag) ?? throw new ConfigurationErrorsException(ResourceStrings.DryRunFlag);
             if (!double.TryParse(terminateDefaultValueString, out double terminateDaysDefault))
             {
                 terminateDaysDefault = 0.0;
             }
 
-            foreach (var resourceGroup in armClient.GetDefaultSubscription().GetResourceGroups())
+            foreach (var resourceGroup in _armClient.GetDefaultSubscription().GetResourceGroups())
             {
                 foreach (var resource in resourceGroup.GetGenericResources())
                 {

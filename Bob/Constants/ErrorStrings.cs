@@ -1,6 +1,6 @@
 ﻿namespace Frank.Constants
 {
-    internal static class LoggingStrings
+    internal static class ErrorStrings
     {
     }
 }

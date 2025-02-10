@@ -14,6 +14,7 @@ namespace Ebenezer.Workers.Tagging
     public class StartupTagging
     {
         private readonly ILogger _logger;
+        private readonly ArmClient _armClient;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="StartupTagging"/> class.
@@ -22,6 +23,7 @@ namespace Ebenezer.Workers.Tagging
         public StartupTagging(ILoggerFactory loggerFactory)
         {
             _logger = loggerFactory.CreateLogger<StartupTagging>();
+            _armClient = new ArmClient(new DefaultAzureCredential());
         }
 
         /// <summary>
@@ -32,8 +34,6 @@ namespace Ebenezer.Workers.Tagging
         public async Task RunAsync([TimerTrigger("0 0 1 * * *")] TimerInfo myTimer)
         {
             _logger.LogInformation($"C# StartupTagging function executed at: {DateTime.Now}");
-            var credential = new DefaultAzureCredential();
-            var armClient = new ArmClient(credential);
             var startupTagKey = Environment.GetEnvironmentVariable(ResourceStrings.StartupTagKey) ?? throw new ConfigurationErrorsException(ResourceStrings.StartupTagKey);
             var startupTagKeyDefault = Environment.GetEnvironmentVariable(ResourceStrings.StartupTagKeyDefault) ?? throw new ConfigurationErrorsException(ResourceStrings.StartupTagKeyDefault);
             var startupTimeTagKey = Environment.GetEnvironmentVariable(ResourceStrings.StartupTimeTagKey) ?? throw new ConfigurationErrorsException(ResourceStrings.StartupTimeTagKey);
@@ -44,7 +44,7 @@ namespace Ebenezer.Workers.Tagging
                 { startupTimeTagKey, startupTimeTagKeyDefault }
             };
 
-            var resourceGroups = armClient.GetDefaultSubscription().GetResourceGroups();
+            var resourceGroups = _armClient.GetDefaultSubscription().GetResourceGroups();
             await foreach (var resourceGroup in resourceGroups)
             {
                 var resources = resourceGroup.GetGenericResourcesAsync();

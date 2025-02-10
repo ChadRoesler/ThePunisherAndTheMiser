@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Graveyard.Models
+﻿namespace Graveyard.Models
 {
     public class HistoricTagModel
     {
         public int Id { get; set; }
-        public Dictionary<string, string> Tags { get; set; }
+        public required Dictionary<string, string> Tags { get; set; }
     }
 }
