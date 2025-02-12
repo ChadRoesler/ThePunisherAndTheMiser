@@ -74,7 +74,7 @@ namespace Graveyard.Services
             return nextId;
         }
 
-        public async Task<List<HistoricTagModel>> LoadTagsAsync(string objectId, string objectType)
+        public async Task<List<HistoricTagModel>> LoadTagHistoryAsync(string objectId, string objectType)
         {
             _logger.LogInformation("Loading tags for ObjectId: {ObjectId}, ObjectType: {ObjectType}", objectId, objectType);
             var transformedObjectType = objectType.Replace('/','.').Replace('/','.').Replace('#', '.').Replace('?', '.');
@@ -95,7 +95,10 @@ namespace Graveyard.Services
                 var historicTag = new HistoricTagModel
                 {
                     Id = tag.Id,
-                    Tags = !string.IsNullOrEmpty(tag.TagJson) ? JsonConvert.DeserializeObject<Dictionary<string, string>>(tag.TagJson) : new Dictionary<string, string>()
+                    Tags = !string.IsNullOrEmpty(tag.TagJson) ? JsonConvert.DeserializeObject<Dictionary<string, string>>(tag.TagJson) : new Dictionary<string, string>(),
+                    Timestamp = tag.Timestamp,
+                    ObjectType = objectType,
+                    ObjectId = objectId
                 };
                 historicTagModels.Add(historicTag);
             }

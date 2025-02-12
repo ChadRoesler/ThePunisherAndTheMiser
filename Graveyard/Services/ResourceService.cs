@@ -142,5 +142,25 @@ namespace Graveyard.Services
             _logger.LogInformation("Loaded {Count} resources for resource group ID: {ResourceGroupId}", resourceObjs.Count, resourceGroupId);
             return resourceObjs;
         }
+
+        public async Task RevertResourceGroupTags(string resourceGroupId, Dictionary<string, string> tagsToRevert)
+        {
+            var rg = _armClient.GetResourceGroupResource(new ResourceIdentifier(resourceGroupId));
+            var tags = rg.Data.VisibleTags();
+            _logger.LogInformation("Reverting tags for resource group: {ResourceGroupId}", resourceGroupId);
+            tags.Merge(tagsToRevert, true);
+            await rg.SetTagsAsync(tags);
+            _logger.LogInformation("Successfully reverted tags for resource group: {ResourceGroupId}", resourceGroupId);
+
+        }
+        public async Task RevertResourceTags(string resourceId, Dictionary<string, string> tagsToRevert)
+        {
+            var res = _armClient.GetGenericResource(new ResourceIdentifier(resourceId));
+            var tags = res.Data.VisibleTags();
+            _logger.LogInformation("Reverting tags for resource: {ResourceId}", resourceId);
+            tags.Merge(tagsToRevert, true);
+            await res.SetTagsAsync(tags);
+            _logger.LogInformation("Successfully reverted tags for resource group: {ObjectId}", resourceId);
+        }
     }
 }

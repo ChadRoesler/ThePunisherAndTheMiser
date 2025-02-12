@@ -47,7 +47,7 @@ namespace Bob.Workers
                 }
 
                 var resource = _resourceService.LoadResource(resourceId);
-                var tagModel = await _tableService.LoadTagsAsync(resourceId, resource.ResourceType);
+                var tagModel = await _tableService.LoadTagHistoryAsync(resourceId, resource.ResourceType);
                 var hasTagHistory = tagModel != null && tagModel.Count > 0;
                 var hasTags = resource.Tags?.CurrentTags != null && resource.Tags.CurrentTags.Count > 0;
 

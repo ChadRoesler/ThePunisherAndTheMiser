@@ -18,6 +18,7 @@ else
                 @rg.Name (@rg.Location)
                 <button @onclick="() => ShowTags(rg.Tags.CurrentTags)">View Tags</button>
                 <button @onclick="() => ViewResources(rg.Id, rg.Name)">View Resources</button>
+                <button @onclick="() => ViewTagHistory(rg.Id, rg.Name, ResourceStrings.ResourceGroupTypeName)">View Tag History</button>
             </li>
         }
     </ul>
@@ -52,5 +53,10 @@ else
     private void ViewResources(string id, string name)
     {
         Navigation.NavigateTo($"/resources/{id}/{name}");
+    }
+
+    private void ViewTagHistory(string id, string name, string type)
+    {
+        Navigation.NavigateTo($"/taghistory/{id}/{name}/{type}");
     }
 }

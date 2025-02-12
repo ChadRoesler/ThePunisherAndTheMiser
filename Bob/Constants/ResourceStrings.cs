@@ -1,4 +1,4 @@
-﻿namespace Frank.Constants
+﻿namespace Bob.Constants
 {
     internal static class ResourceStrings
     {

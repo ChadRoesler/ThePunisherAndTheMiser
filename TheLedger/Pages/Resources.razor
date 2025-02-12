@@ -17,6 +17,7 @@ else
             <li>
                 @res.Name (@res.ResourceType) - @res.Location
                 <button @onclick="() => ShowTags(res.Tags.CurrentTags)">View Tags</button>
+                <button @onclick="() => ViewTagHistory(res.Id, res.Name, res.ResourceType)">View Tag History</button>
             </li>
         }
     </ul>
@@ -46,5 +47,10 @@ else
     private void ShowTags(Dictionary<string, string>? tags)
     {
         selectedTags = tags;
+    }
+
+    private void ViewTagHistory(string id, string name, string type)
+    {
+        Navigation.NavigateTo($"/taghistory/{id}/{name}/{type}");
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Frank.Constants
+﻿namespace TheLedger.Constants
 {
     internal static class ErrorStrings
     {
