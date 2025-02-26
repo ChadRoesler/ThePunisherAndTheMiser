@@ -2,7 +2,7 @@
 {
     public static class DictionaryExtensions
     {
-        public static bool IsEqualTo<TKey, TValue>(this Dictionary<TKey, TValue> rootDictionary, Dictionary<TKey, TValue> comparedDictionary) where TKey : notnull
+        public static bool IsEqualTo(this Dictionary<string, string> rootDictionary, Dictionary<string, string> comparedDictionary)
         {
             ArgumentNullException.ThrowIfNull(rootDictionary);
             ArgumentNullException.ThrowIfNull(comparedDictionary);
@@ -12,9 +12,9 @@
                 return false;
             }
 
-            foreach (var kvp in rootDictionary)
+            foreach (var rootEntry in rootDictionary)
             {
-                if (!comparedDictionary.TryGetValue(kvp.Key, out var comparedValue) || !EqualityComparer<TValue>.Default.Equals(kvp.Value, comparedValue))
+                if (!comparedDictionary.TryGetValue(rootEntry.Key, out var comparedValue) || !string.Equals(rootEntry.Value, comparedValue))
                 {
                     return false;
                 }
@@ -22,7 +22,7 @@
             return true;
         }
 
-        public static void Merge<TKey, TValue>(this Dictionary<TKey, TValue> rootDictionary, Dictionary<TKey, TValue> comparedDictionary, bool updateIfKeyExists = false) where TKey : notnull
+        public static void Merge(this Dictionary<string, string> rootDictionary, Dictionary<string, string> comparedDictionary, bool overwriteKeyIfEmpty = false, bool overwriteKeyValue = false)
         {
             if (rootDictionary is null)
             {
@@ -33,11 +33,11 @@
                 ArgumentNullException.ThrowIfNull(comparedDictionary);
             }
 
-            foreach (var kvp in comparedDictionary)
+            foreach (var comparedEntry in comparedDictionary)
             {
-                if (updateIfKeyExists || !rootDictionary.ContainsKey(kvp.Key))
+                if (overwriteKeyValue || !rootDictionary.TryGetValue(comparedEntry.Key, out var comparedValue) || (overwriteKeyIfEmpty &&  string.IsNullOrWhiteSpace(comparedValue)))
                 {
-                    rootDictionary[kvp.Key] = kvp.Value;
+                    rootDictionary[comparedEntry.Key] = comparedEntry.Value;
                 }
             }
         }

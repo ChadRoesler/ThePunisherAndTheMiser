@@ -3,7 +3,7 @@ using Graveyard.Constants;
 
 namespace Graveyard.ExtensionMethods
 {
-    internal static class ResourceGroupDataExtension
+    public static class ResourceGroupDataExtension
     {
         public static Dictionary<string, string> VisibleTags(this ResourceGroupData data)
         {

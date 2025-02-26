@@ -13,9 +13,9 @@ var host = new HostBuilder()
         services.ConfigureFunctionsApplicationInsights();
         services.AddSingleton(provider =>
         {
-            var logger = provider.GetRequiredService<ILogger<TableService>>();
+            var logger = provider.GetRequiredService<ILogger<TagTableService>>();
             var storageUri = Environment.GetEnvironmentVariable("StorageUri") ?? throw new ConfigurationErrorsException("StorageUri");
-            return new TableService(storageUri, logger);
+            return new TagTableService(storageUri, logger);
         });
         services.AddSingleton(provider =>
         {

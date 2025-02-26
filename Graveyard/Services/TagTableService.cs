@@ -9,20 +9,20 @@ using Newtonsoft.Json;
 
 namespace Graveyard.Services
 {
-    public class TableService
+    public class TagTableService
     {
         private readonly TableServiceClient _tableServiceClient;
         private readonly TableClient _tagTableClient;
-        private readonly ILogger<TableService> _logger;
+        private readonly ILogger<TagTableService> _logger;
 
-        public TableService(string tableUri, ILogger<TableService> logger)
+        public TagTableService(string tableUri, ILogger<TagTableService> logger)
         {
             _tableServiceClient = new TableServiceClient(new Uri(tableUri), new DefaultAzureCredential());
             _tagTableClient = _tableServiceClient.GetTableClient(ResourceStrings.TagHistoryTableName);
             _logger = logger;
         }
 
-        public TableService(string tableUri, TokenCredential tokenCredential, ILogger<TableService> logger)
+        public TagTableService(string tableUri, TokenCredential tokenCredential, ILogger<TagTableService> logger)
         {
             _tableServiceClient = new TableServiceClient(new Uri(tableUri), tokenCredential);
             _tagTableClient = _tableServiceClient.GetTableClient(ResourceStrings.TagHistoryTableName);
@@ -95,7 +95,7 @@ namespace Graveyard.Services
                 var historicTag = new HistoricTagModel
                 {
                     Id = tag.Id,
-                    Tags = !string.IsNullOrEmpty(tag.TagJson) ? JsonConvert.DeserializeObject<Dictionary<string, string>>(tag.TagJson) : new Dictionary<string, string>(),
+                    Tags = !string.IsNullOrEmpty(tag.TagJson) ? JsonConvert.DeserializeObject<Dictionary<string, string>>(tag.TagJson) : [],
                     Timestamp = tag.Timestamp,
                     ObjectType = objectType,
                     ObjectId = objectId

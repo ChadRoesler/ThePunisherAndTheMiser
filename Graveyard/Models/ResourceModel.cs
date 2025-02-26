@@ -1,6 +1,8 @@
-﻿namespace Graveyard.Models
+﻿using Graveyard.Models.Interfaces;
+
+namespace Graveyard.Models
 {
-    public class ResourceModel
+    public class ResourceModel : IResourceObject
     {
         public string Name { get; set; } = string.Empty;
         public string ResourceType { get; set; } = string.Empty;
