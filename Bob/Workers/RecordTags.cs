@@ -78,7 +78,7 @@ namespace BobCratchit.Workers
                 return;
             }
             _logger.LogInformation("Resource type: {resourceType}", resourceType);
-            if (!_resourceTypes.Contains(resourceType))
+            if (!_resourceTypes.Contains("all") && !_resourceTypes.Contains(resourceType))
             {
                 _logger.LogInformation("Resource type is not in the list of resource types to record tags for. Skipping...");
                 return;
